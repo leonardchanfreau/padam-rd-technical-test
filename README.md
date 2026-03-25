@@ -35,3 +35,15 @@ A few graph instances are available in a folder named `instances`.
 
 
 Good luck!
+
+
+# Comment on the solution
+
+The solution is based on the construction of a semi-eulerian graph, by doubling
+the edges starting from odd-degree vertices with the smallest weights.
+
+In the current version, it is still non-optimal for the following reasons:
+- the minimum weight perfect matching relies on a greedy solution
+- large graphs take a long time to be processed because of the repetition of
+dijkstra executions
+- separated graphs (as in the islands example) are not handled.
