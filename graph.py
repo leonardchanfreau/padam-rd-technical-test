@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 
@@ -22,9 +23,25 @@ class Graph:
 
         edges : list[Edge]
             List of edges as tuple (id 1, id 2, weight, coordinates 1, coordinates 2).
+            
+        adjacency_matrix : np.ndarray
+            Adjacency matrix of the graph, with 0 if there is no edge between two vertices,
+            and the number of edges otherwise.
+            
+        edge_index_map : dict[tuple[int, int], int]
+            A hashmap to easily access the index of an edge given its vertices ids.
         """
         self.vertices = vertices
         self.edges = edges
+
+        # Adjacency matrix of the graph, to simplify further algorithms.
+        self.adjacency_matrix = self._compute_adjacency_matrix()
+        # edge hashmap to easily access the index of an edge
+        self.edge_index_map = {
+            (edge[0], edge[1]): i for i, edge in enumerate(self.edges)}
+        self.edge_index_map.update(
+            {(edge[1], edge[0]): i for i, edge in enumerate(self.edges)}
+        )
 
     def plot(self):
         """
@@ -67,3 +84,10 @@ class Graph:
                     arrowprops=dict(arrowstyle="->", color=colors(path_index)),
                 )
         plt.show()
+        
+    def _compute_adjacency_matrix(self) -> np.ndarray:
+        adjacency_matrix = np.zeros((len(self.vertices), len(self.vertices)), dtype=int)
+        for edge in self.edges:
+            adjacency_matrix[edge[0], edge[1]] += 1
+            adjacency_matrix[edge[1], edge[0]] += 1
+        return adjacency_matrix
